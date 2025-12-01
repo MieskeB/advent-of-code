@@ -25,7 +25,8 @@ int main() {
     }
 
     int dial = 50;
-    int count = 0;
+    int count_a = 0;
+    int count_b = 0;
     for (const std::string &line: lines) {
         const char dir = line[0];
         int amount = 0;
@@ -36,18 +37,35 @@ int main() {
         } else {
             amount = (line[1] - '0') * 100 + (line[2] - '0') * 10 + (line[3] - '0');
         }
+
         if (dir == 'L') {
+            if (dial == 0) {
+                dial = 100;
+            }
+            while (amount > dial) {
+                amount -= dial;
+                dial = 100;
+                count_b++;
+            }
             dial = (dial - amount) % 100;
         } else {
+            while (amount > 100 - dial) {
+                amount -= 100 - dial;
+                dial = 0;
+                count_b++;
+            }
             dial = (dial + amount) % 100;
         }
+
         if (dial < 0) {
             dial = 100 + dial;
         }
         if (dial == 0) {
-            count++;
+            count_a++;
+            count_b++;
         }
     }
 
-    std::cout << count << std::endl;
+    std::cout << "Amount of times on 0: " << count_a << std::endl;
+    std::cout << "Amount of times touched 0: " << count_b << std::endl;
 }
