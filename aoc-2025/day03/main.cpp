@@ -24,7 +24,50 @@ int main() {
         lines.push_back(line);
     }
 
+    int res_a = 0;
     for (const std::string& line : lines) {
-        std::cout << line << std::endl;
+        int largest = 0;
+        for (int i = 0; i < line.length() - 1; i++) {
+            for (int j = i + 1; j < line.length(); j++) {
+                std::string word = std::string(1, line[i]) + line[j];
+                int number = std::stoi(word);
+                if (number > largest) {
+                    largest = number;
+                }
+            }
+        }
+        res_a += largest;
     }
+    std::cout << "res a: " << res_a << std::endl;
+
+    long long res_b = 0;
+    for (const std::string& line : lines) {
+        std::string result;
+        int curr_index = 0;
+        int curr_number = 9;
+        for (int i = 11; i >= 0; i--) {
+            while (true) {
+                bool done = false;
+                for (int j = curr_index; j < line.length() - i; j++) {
+                    if (line[j] - '0' == curr_number) {
+                        done = true;
+                        result += line[j];
+                        curr_index = j + 1;
+                        curr_number = 9;
+                        break;
+                    }
+                }
+                if (done) {
+                    break;
+                }
+                curr_number -= 1;
+                if (curr_number < 0) {
+                    std::cout << "Curr number became lower than 0" << std::endl;
+                    exit(1);
+                }
+            }
+        }
+        res_b += std::stoll(result);
+    }
+    std::cout << "res b: " << res_b << std::endl;
 }
