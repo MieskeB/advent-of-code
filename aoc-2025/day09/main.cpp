@@ -10,6 +10,20 @@ std::filesystem::path get_input_path() {
     return input_path;
 }
 
+std::vector<std::string> split(const std::string &s, const std::string &delimiter) {
+    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+    std::vector<std::string> res;
+
+    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
+        std::string token = s.substr(pos_start, pos_end - pos_start);
+        pos_start = pos_end + delim_len;
+        res.push_back(token);
+    }
+
+    res.push_back(s.substr(pos_start));
+    return res;
+}
+
 int main() {
     std::filesystem::path input_path = get_input_path();
     std::ifstream infile(input_path);
@@ -24,7 +38,27 @@ int main() {
         lines.push_back(line);
     }
 
-    for (const std::string& line : lines) {
-        std::cout << line << std::endl;
+    long long largest_area = 0;
+    for (int i = 0; i < lines.size() - 1; i++) {
+        for (int j = i + 1; j < lines.size(); j++) {
+            std::vector<std::string> point_a_v = split(lines[i], ",");
+            std::vector<std::string> point_b_v = split(lines[j], ",");
+            int point_a_x = std::stoi(point_a_v[0]);
+            int point_a_y = std::stoi(point_a_v[1]);
+            int point_b_x = std::stoi(point_b_v[0]);
+            int point_b_y = std::stoi(point_b_v[1]);
+
+            long long dx = std::abs(point_a_x - point_b_x) + 1;
+            long long dy = std::abs(point_a_y - point_b_y) + 1;
+
+            long long area = dx * dy;
+            if (largest_area < area) {
+                largest_area = area;
+            }
+        }
     }
+
+    std::cout << "res a: " << largest_area << std::endl;
+
+    // TODO I have no idea how to go about solving b
 }
